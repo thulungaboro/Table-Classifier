@@ -1,0 +1,6 @@
+path: D:\Project-1-Tb-DTC\dataset_combined
+train: images/train
+val: images/val
+test: images/test
+nc: 2
+names: ["bordered", "borderless"]

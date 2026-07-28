@@ -1,0 +1,7 @@
+
+path: D:\Project-1-Tb-DTC\dataset_combined
+train: images/train
+val: images/val
+test: test_real_only.txt  # Points to our filtered text list
+nc: 2
+names: ["bordered", "borderless"]
