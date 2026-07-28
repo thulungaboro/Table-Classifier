@@ -1,26 +1,44 @@
 # Table Classifier (YOLOv8)
 
-![Python 3.10](https://img.shields.io/badge/Python-3.10-blue.svg)
-![YOLOv8](https://img.shields.io/badge/YOLOv8-Ultralytics-00FFFF.svg)
-![Computer Vision](https://img.shields.io/badge/Task-Table%20Detection%20%26%20Classification-orange.svg)
+![Python](https://img.shields.io/badge/python-3.8%2B-blue)
+![Model](https://img.shields.io/badge/model-YOLOv8-orange)
+![Task](https://img.shields.io/badge/task-Table%20Detection%20%26%20Classification-green)
 
-An end-to-end computer vision repository designed for detecting and classifying tables in document images into **bordered** and **borderless** classes using custom-trained YOLOv8.
+An end-to-end computer vision project for detecting and classifying tables in document images into **bordered** and **borderless** tables using YOLOv8.
+
+![Example detection](docs/example_detection.jpg)
 
 ---
 
-## 📊 Results & Performance
+## 📌 Overview
 
-Evaluated on **100 epochs** of training using pooled (real + synthetic) and real-only document test splits:
+Document structure recognition and tabular data extraction often rely heavily on accurate table detection. This repository provides scripts and pipelines for:
 
-| Evaluation Split | Total Images | mAP50 | mAP50-95 | Precision | Recall |
-| :--- | :---: | :---: | :---: | :---: | :---: |
-| **Pooled Test Set (Real + Synthetic)** | 258 | **0.9806** | **0.8570** | 0.963 | 0.968 |
-| **Real-Only Test Set** | 110 | **0.9538** | **0.8310** | 0.926 | 0.927 |
+- Combining real document datasets with synthetic table datasets using stratified splitting.
+- Training a custom YOLOv8 model for table detection.
+- Evaluating model metrics (`mAP50`, `mAP50-95`) across **Pooled (Real + Synthetic)** test sets as well as isolated **Real-Only** test sets.
+- Verifying class distributions and split balances.
 
-### 📈 Model Evaluation Metrics & Curves
-- **Precision-Recall Curve**: `runs/detect/train/BoxPR_curve.png`
-- **Confusion Matrix**: `runs/detect/train/confusion_matrix.png`
-- **Training Curves**: `runs/detect/train/results.png`
+---
+
+## 📊 Results
+
+Evaluated on 100 epochs of training across pooled and real-only document test splits:
+
+| Test set | mAP50 | mAP50-95 | Precision | Recall |
+| --- | :---: | :---: | :---: | :---: |
+| **Pooled (Real + Synthetic)** | **0.9806** | **0.8570** | 0.963 | 0.968 |
+| **Real-Only** | **0.9538** | **0.8310** | 0.926 | 0.927 |
+
+![Training curves](docs/training_curves.png)
+
+**Class distribution across splits (`dataset_combined`):**
+
+```
+train:  bordered=503  borderless=560  (Total: 1063 annotations across 789 images)
+val:    bordered=169  borderless=187  (Total: 356 annotations across 253 images)
+test:   bordered=167  borderless=195  (Total: 362 annotations across 263 images)
+```
 
 ---
 
@@ -28,73 +46,102 @@ Evaluated on **100 epochs** of training using pooled (real + synthetic) and real
 
 ```
 Project-1-Tb-DTC/
-├── dataset/                    # Original real annotated document dataset
-├── dataset_combined/           # Pooled train/val/test dataset & manifest.csv
-├── runs/                       # YOLOv8 training, evaluation plots, and weights
-├── build_combined_dataset.py   # Script to merge real + synthetic pools with stratified ratios
-├── generate_synthetic_dataset.py # Synthetic document page generator
-├── evaluate_model.py           # Evaluates model on pooled vs real-only test splits
-├── verify_split_balance.py     # Checks class distributions across splits
+├── dataset/                    # Original annotated dataset (images & labels)
+├── dataset_combined/           # Generated combined dataset (train/val/test splits & manifest.csv)
+├── runs/                       # YOLOv8 training and evaluation outputs/logs
+├── docs/                       # README images (example detections, training curves)
+├── build_combined_dataset.py   # Merge real and synthetic pools with custom split ratios
+├── generate_synthetic_dataset.py # Synthetic document page generator script
+├── evaluate_model.py           # Evaluation script comparing pooled vs real-only test metrics
+├── verify_split_balance.py     # Script to check class balance across splits
 ├── test_model.py               # Comprehensive inference testing menu
-├── demo.py                     # 2-minute quick demo inference script
+├── demo.py                     # Quick single-image inference demo
 ├── requirements.txt            # Pinned dependencies
-└── README.md                   # Documentation
+├── yolov8n.pt                  # Pretrained YOLOv8 base weights
+└── README.md                   # Project documentation
 ```
 
 ---
 
-## 📁 Dataset & Generation
+## 🚀 Getting Started
 
-1. **Real Data**: Genuine scanned documents and PDF page renders annotated for `bordered` (Class 0) and `borderless` (Class 1) table structures.
-2. **Synthetic Data**: Generated programmatically using [generate_synthetic_dataset.py](file:///d:/Project-1-Tb-DTC/generate_synthetic_dataset.py) to simulate diverse table layouts, fonts, cell densities, and negative (table-free) document pages.
-3. **Stratified Splitting**: [build_combined_dataset.py](file:///d:/Project-1-Tb-DTC/build_combined_dataset.py) balances scarce real images (weighted to val/test) with cheap synthetic images (weighted to train), maintaining a `manifest.csv` for data source auditing.
+### Prerequisites
 
----
+Python 3.8+ is required.
 
-## 🚀 Quick Start & Installation
-
-### 1. Install Dependencies
 ```bash
+git clone https://github.com/thulungaboro/Table-Classifier.git
+cd Table-Classifier
 pip install -r requirements.txt
 ```
 
-### 2. Run Demo Inference (2 minutes)
-```bash
-python demo.py --image table_test.jpg
-```
+### Dataset
+
+- **Real images**: Annotated real-world document pages (scanned documents & PDF page renders) with labels for bordered and borderless table regions.
+- **Synthetic images**: Generated programmatically via `generate_synthetic_dataset.py` simulating table layouts and text formatting.
+- **Combined Split**: Built using `build_combined_dataset.py` to balance real data (skewed to val/test) and synthetic data (skewed to train), tracked via `manifest.csv`.
 
 ---
 
-## 🛠️ Data Pipeline & Training Workflow
+## 🛠️ Usage
 
-### Generate Synthetic Dataset
+### 1. Generate Synthetic Dataset
 ```bash
-python generate_synthetic_dataset.py --out synthetic_pool --num 500 --neg_ratio 0.15
+python generate_synthetic_dataset.py --out synth_pool --num 500 --neg_ratio 0.15
 ```
 
-### Merge Real + Synthetic Datasets
+### 2. Build Combined Dataset
+
+Combine scarce real-world annotations with synthetic datasets while maintaining class balance and generating a `manifest.csv` tracking data origin:
+
 ```bash
 python build_combined_dataset.py \
     --real_images dataset/images/train dataset/images/val \
     --real_labels dataset/labels/train dataset/labels/val \
-    --synth_images synthetic_pool/images \
-    --synth_labels synthetic_pool/labels \
+    --synth_images synth_pool/images \
+    --synth_labels synth_pool/labels \
     --out dataset_combined
 ```
 
-### Verify Split Balance
+### 3. Verify Dataset Split Balance
+
 ```bash
 python verify_split_balance.py dataset_combined
 ```
 
-### Evaluate Model
+### 4. Model Evaluation
+
 ```bash
 python evaluate_model.py
 ```
 
+### 5. Quick Demo
+
+Run inference on a single image and save an annotated output:
+
+```bash
+python demo.py --image table_test.jpg --weights runs/detect/train/weights/best.pt --out docs/example_detection.jpg
+```
+
 ---
 
-## 🏷️ Class Definitions
+## 🏷️ Data & Classes
 
-- **`0` (`bordered`)**: Tables with visible lines/borders grid structure.
-- **`1` (`borderless`)**: Tables aligned with whitespace without bounding line borders.
+| ID | Class        | Description                                  |
+|----|--------------|-----------------------------------------------|
+| 0  | `bordered`   | Tables with explicit borders/grid lines       |
+| 1  | `borderless` | Tables without explicit column/row lines      |
+
+---
+
+## 🗺️ Roadmap
+
+- [ ] Add table structure recognition (rows/columns) on top of detection
+- [ ] Export model to ONNX for fast production inference
+- [ ] Add a Google Colab notebook for interactive demonstration
+
+---
+
+## 🤝 Contributing
+
+Issues and pull requests are welcome. Please open an issue first to discuss any major changes.

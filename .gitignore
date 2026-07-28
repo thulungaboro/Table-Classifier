@@ -1,32 +1,26 @@
-# Virtual Environment
-venv/
-env/
-ENV/
-.venv/
-
 # Python & Caches
 __pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-build/
-dist/
+*.pyc
+*.pyo
+.venv/
+venv/
+env/
 *.egg-info/
 
-# Databases & Local Logs
+# Jupyter
+.ipynb_checkpoints/
+
+# Database & Logs
 classifications.db
 *.log
 
-# Large Datasets & Model Weights (Optional to exclude heavy binaries)
+# Heavy Weights (keep base yolov8n.pt if needed)
 *.pt
-*.cache
+!yolov8n.pt
 
-# IDE & OS
+# OS / Editor cruft
+.DS_Store
+Thumbs.db
+desktop.ini
 .vscode/
 .idea/
-*.swp
-*.swo
-Thumbs.db
-.DS_Store
-desktop.ini
