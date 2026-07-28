@@ -10,7 +10,7 @@ An end-to-end computer vision project for detecting and classifying tables in do
 
 ---
 
-## 📌 Overview
+##  Overview
 
 Document structure recognition and tabular data extraction often rely heavily on accurate table detection. This repository provides scripts and pipelines for:
 
@@ -21,7 +21,7 @@ Document structure recognition and tabular data extraction often rely heavily on
 
 ---
 
-## 📊 Results
+##  Results
 
 Evaluated on 100 epochs of training across pooled and real-only document test splits:
 
@@ -42,7 +42,7 @@ test:   bordered=167  borderless=195  (Total: 362 annotations across 263 images)
 
 ---
 
-## 📂 Project Structure
+##  Project Structure
 
 ```
 Project-1-Tb-DTC/
@@ -70,7 +70,7 @@ Project-1-Tb-DTC/
 
 ---
 
-## 🚀 Getting Started
+##  Getting Started
 
 ### Prerequisites
 
@@ -90,7 +90,7 @@ pip install -r requirements.txt
 
 ---
 
-## 🛠️ Usage
+##  Usage
 
 ### 1. Generate Synthetic Dataset
 ```bash
@@ -138,7 +138,7 @@ python demo.py --image table_test.jpg --weights runs/detect/train/weights/best.p
 
 ---
 
-## 🏷️ Data & Classes
+##  Data & Classes
 
 | ID | Class        | Description                                  |
 |----|--------------|-----------------------------------------------|
@@ -147,7 +147,7 @@ python demo.py --image table_test.jpg --weights runs/detect/train/weights/best.p
 
 ---
 
-## 🗺️ Roadmap
+##  Roadmap
 
 - [ ] Add table structure recognition (rows/columns) on top of detection
 - [ ] Export model to ONNX for fast production inference
@@ -155,6 +155,6 @@ python demo.py --image table_test.jpg --weights runs/detect/train/weights/best.p
 
 ---
 
-## 🤝 Contributing
+##  Contributing
 
 Issues and pull requests are welcome. Please open an issue first to discuss any major changes.
