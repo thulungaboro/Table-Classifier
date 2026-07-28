@@ -14,8 +14,8 @@ Evaluated on **100 epochs** of training using pooled (real + synthetic) and real
 
 | Evaluation Split | Total Images | mAP50 | mAP50-95 | Precision | Recall |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| **Pooled Test Set (Real + Synthetic)** | 263 | **0.973** | **0.858** | 0.962 | 0.961 |
-| **Real-Only Test Set** | 110 | **0.965** | **0.842** | 0.958 | 0.954 |
+| **Pooled Test Set (Real + Synthetic)** | 258 | **0.9806** | **0.8570** | 0.963 | 0.968 |
+| **Real-Only Test Set** | 110 | **0.9538** | **0.8310** | 0.926 | 0.927 |
 
 ### 📈 Model Evaluation Metrics & Curves
 - **Precision-Recall Curve**: `runs/detect/train/BoxPR_curve.png`
