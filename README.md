@@ -46,19 +46,26 @@ test:   bordered=167  borderless=195  (Total: 362 annotations across 263 images)
 
 ```
 Project-1-Tb-DTC/
-├── dataset/                    # Original annotated dataset (images & labels)
-├── dataset_combined/           # Generated combined dataset (train/val/test splits & manifest.csv)
-├── runs/                       # YOLOv8 training and evaluation outputs/logs
-├── docs/                       # README images (example detections, training curves)
-├── build_combined_dataset.py   # Merge real and synthetic pools with custom split ratios
-├── generate_synthetic_dataset.py # Synthetic document page generator script
-├── evaluate_model.py           # Evaluation script comparing pooled vs real-only test metrics
-├── verify_split_balance.py     # Script to check class balance across splits
-├── test_model.py               # Comprehensive inference testing menu
-├── demo.py                     # Quick single-image inference demo
-├── requirements.txt            # Pinned dependencies
-├── yolov8n.pt                  # Pretrained YOLOv8 base weights
-└── README.md                   # Project documentation
+├── README.md                 # Project documentation
+├── requirements.txt          # Pinned dependencies
+├── demo.py                   # 2-minute quick single-image inference demo
+├── yolov8n.pt                # Pretrained YOLOv8 base weights
+│
+├── docs/                     # Documentation assets (plots & detection samples)
+│   ├── example_detection.jpg
+│   └── training_curves.png
+│
+├── src/                      # Source scripts
+│   ├── dataset_builder.py    # Merges real + synthetic pools with stratified ratios
+│   ├── dataset_generator.py  # Synthetic document page generator
+│   ├── dataset_verifier.py   # Verifies class distribution and split balance
+│   ├── evaluate.py           # Evaluates model on pooled vs real-only test splits
+│   ├── db_logger.py          # Log detection outputs to SQLite database
+│   └── inference_menu.py     # Interactive model inference testing menu
+│
+├── dataset/                  # Original annotated real dataset
+├── dataset_combined/         # Pooled train/val/test dataset & manifest.csv
+└── runs/                     # YOLOv8 training outputs, weights, and evaluation runs
 ```
 
 ---
@@ -78,8 +85,8 @@ pip install -r requirements.txt
 ### Dataset
 
 - **Real images**: Annotated real-world document pages (scanned documents & PDF page renders) with labels for bordered and borderless table regions.
-- **Synthetic images**: Generated programmatically via `generate_synthetic_dataset.py` simulating table layouts and text formatting.
-- **Combined Split**: Built using `build_combined_dataset.py` to balance real data (skewed to val/test) and synthetic data (skewed to train), tracked via `manifest.csv`.
+- **Synthetic images**: Generated programmatically via `src/dataset_generator.py` simulating table layouts and text formatting.
+- **Combined Split**: Built using `src/dataset_builder.py` to balance real data (skewed to val/test) and synthetic data (skewed to train), tracked via `manifest.csv`.
 
 ---
 
@@ -87,7 +94,7 @@ pip install -r requirements.txt
 
 ### 1. Generate Synthetic Dataset
 ```bash
-python generate_synthetic_dataset.py --out synth_pool --num 500 --neg_ratio 0.15
+python src/dataset_generator.py --out synth_pool --num 500 --neg_ratio 0.15
 ```
 
 ### 2. Build Combined Dataset
@@ -95,7 +102,7 @@ python generate_synthetic_dataset.py --out synth_pool --num 500 --neg_ratio 0.15
 Combine scarce real-world annotations with synthetic datasets while maintaining class balance and generating a `manifest.csv` tracking data origin:
 
 ```bash
-python build_combined_dataset.py \
+python src/dataset_builder.py \
     --real_images dataset/images/train dataset/images/val \
     --real_labels dataset/labels/train dataset/labels/val \
     --synth_images synth_pool/images \
@@ -106,16 +113,22 @@ python build_combined_dataset.py \
 ### 3. Verify Dataset Split Balance
 
 ```bash
-python verify_split_balance.py dataset_combined
+python src/dataset_verifier.py dataset_combined
 ```
 
 ### 4. Model Evaluation
 
 ```bash
-python evaluate_model.py
+python src/evaluate.py
 ```
 
-### 5. Quick Demo
+### 5. Interactive Inference Menu
+
+```bash
+python src/inference_menu.py
+```
+
+### 6. Quick Demo
 
 Run inference on a single image and save an annotated output:
 

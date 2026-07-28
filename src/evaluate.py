@@ -7,12 +7,16 @@ def main():
     print("  EVALUATION STEP 1: POOLED TEST SET (Real + Synthetic)")
     print("=" * 60)
     
+    base_dir = Path(__file__).resolve().parent.parent
+    weights_path = base_dir / "runs" / "detect" / "train" / "weights" / "best.pt"
+    
     # Load your newly trained model
-    model = YOLO(r"D:\Project-1-Tb-DTC\runs\detect\train\weights\best.pt")
+    model = YOLO(str(weights_path))
     
     # 1. Run evaluation on the full pooled test set
+    dataset_dir = base_dir / "dataset_combined"
     results_pooled = model.val(
-        data=r"D:\Project-1-Tb-DTC\dataset_combined\data.yaml", 
+        data=str(dataset_dir / "data.yaml"), 
         split="test",
         name="eval_test_pooled"
     )
@@ -23,7 +27,6 @@ def main():
     print("Filtering test set using manifest.csv to isolate real-world data...\n")
     
     # 2. Setup the real-only test data
-    dataset_dir = Path(r"D:\Project-1-Tb-DTC\dataset_combined")
     manifest_path = dataset_dir / "manifest.csv"
     
     real_test_images = []

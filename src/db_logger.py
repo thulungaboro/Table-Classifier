@@ -2,7 +2,7 @@ import sqlite3
 from pathlib import Path
 from ultralytics import YOLO
 
-DB_PATH = Path(__file__).resolve().parent / "classifications.db"
+DB_PATH = Path(__file__).resolve().parent.parent / "classifications.db"
 
 def init_db():
     """Initialize SQLite database table for storing image table classifications."""

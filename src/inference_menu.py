@@ -18,7 +18,7 @@ def load_best_model():
     """Load the best-performing trained model from the runs folder."""
     import csv
     from pathlib import Path
-    base_dir = Path(__file__).resolve().parent
+    base_dir = Path(__file__).resolve().parent.parent
     run_dir = base_dir / "runs" / "detect"
 
     candidates = []
@@ -85,7 +85,7 @@ def test_validation_set(model):
     print("Testing on Validation Set (with metrics)")
     print(f"{'='*60}")
 
-    base_dir = Path(__file__).resolve().parent
+    base_dir = Path(__file__).resolve().parent.parent
     dataset_yaml = base_dir / "dataset" / "data.yaml"
 
     if not dataset_yaml.exists():
@@ -153,7 +153,7 @@ def test_sample_images(model):
     print("Testing Sample Images from Project Root")
     print(f"{'='*60}")
 
-    base_dir = Path(__file__).resolve().parent
+    base_dir = Path(__file__).resolve().parent.parent
     sample_images = [
         base_dir / "table_test.jpg",
         base_dir / "table2.png"
@@ -205,7 +205,7 @@ def main():
         test_directory(model, directory, output_name)
 
     elif choice == "5":
-        base_dir = Path(__file__).resolve().parent
+        base_dir = Path(__file__).resolve().parent.parent
         val_images = base_dir / "dataset" / "images" / "val"
         test_directory(model, str(val_images), "validate_test")
 
